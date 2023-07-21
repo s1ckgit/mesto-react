@@ -15,10 +15,18 @@ function Main({ onEditAvatar, onEditProifle, onAddPlace, onCardClick }) {
           setUserDescription(userData.about)
           setUserAvatar(userData.avatar)
         })
-      
+        .catch(e => {
+          console.log(`Произошла ошибка:
+          ${e}`)
+        })
+
       api.getInitialCards()
         .then(cardsData => {
           setCards(cardsData)
+        })
+        .catch(e => {
+          console.log(`Произошла ошибка:
+          ${e}`)
         })
     }, [])
     return (
