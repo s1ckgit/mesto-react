@@ -1,6 +1,6 @@
 import classNames from "classnames"
 
-function PopupWithImage({card, onClose}) {
+function ImagePopup({card, onClose}) {
     return (
         <div className={classNames("popup popup_image", {
             'popup_opened': card !== null
@@ -18,4 +18,4 @@ function PopupWithImage({card, onClose}) {
     )
 }
 
-export default PopupWithImage
+export default ImagePopup
