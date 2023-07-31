@@ -1,6 +1,6 @@
 import cn from 'classnames'
 
-function PopupWithForm( {title, name, buttonText, children, isOpen, onClose} ) {
+function PopupWithForm( {title, name, buttonText, children, isOpen, onClose, onSubmit} ) {
     return (
         <div className={cn(`popup popup_${name}`, {
             'popup_opened': isOpen === true
@@ -15,6 +15,7 @@ function PopupWithForm( {title, name, buttonText, children, isOpen, onClose} ) {
               className={`popup__form popup__form_${name}`}
               id={`popupForm${name[0].toUpperCase() + name.slice(1)}`}
               noValidate=""
+              onSubmit={onSubmit}
             >
               {children}
               <button type="submit" className={`popup__button popup__button_${name}`}>

@@ -20,19 +20,13 @@ function App() {
   const [cards, setCards] = useState([])
 
   useEffect(() => {
-    api.getUserInfo()
-      .then(userData => {
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then(([userData, cardsData]) => {
         setCurrentUser(userData)
-      })
-      .catch(e => console.log(`Что-то пошло не так...
-      ${e}`))
-
-    api.getInitialCards()
-      .then(cardsData => {
         setCards(cardsData)
       })
       .catch(e => {
-        console.log(`Произошла ошибка:
+        console.log(`Ошибка получения данных с сервера...
         ${e}`)
       })
   }, [])
@@ -61,39 +55,58 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    const isLiked = card.likes.some(i => i._id === currentUser._id)
 
-    api.likeCard(card._id, !isLiked).then((newCard) => {
-        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-    });
+    api.likeCard(card._id, !isLiked)
+      .then((newCard) => {
+        setCards((state) => state.map((c) => c._id === card._id ? newCard : c))
+      })
+      .catch(e => {
+        console.log(`Произошла ошибка:
+        ${e}`)
+      })
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card._id).then(() => setCards(state => state.filter(c => c._id !== card._id)))
+    api.deleteCard(card._id)
+      .then(() => setCards(state => state.filter(c => c._id !== card._id)))
+      .catch(e => {
+        console.log(`Произошла ошибка:
+        ${e}`)
+      })
   }
 
   function handleUpdateUser({name, about}) {
     api.changeUserInfo({name, about})
       .then(userData => {
         setCurrentUser(userData)
+        closeAllPopups()
       })
-    closeAllPopups()
+      .catch(e => {
+        console.log(`Произошла ошибка:
+        ${e}`)
+      })
   }
 
   function handleUpdateAvatar({avatar}) {
     api.changeAvatar({avatar})
-      .then(res => setCurrentUser({...currentUser, avatar: res.avatar}))
+      .then(res => {
+        setCurrentUser({...currentUser, avatar: res.avatar})
+        closeAllPopups()
+    })
       .catch(e => console.log(`Что-то пошло не так...
       ${e}`))
-    closeAllPopups()
   }
 
   function handleAddPlaceSubmit({name, link}) {
     api.addCard({name, link})
-      .then(newCard => setCards([newCard, ...cards]))
+      .then(newCard => {
+        setCards([newCard, ...cards])
+        closeAllPopups()
+      })
       .catch(e => console.log(`Что-то пошло не так...
       ${e}`))
-    closeAllPopups()
+
   }
 
   return (
